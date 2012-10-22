@@ -14,12 +14,15 @@ import java.rmi.server.UnicastRemoteObject;
  */
 class Computer extends UnicastRemoteObject implements ComputerAPI
 {
-    Computer() throws RemoteException {}
+    private SpaceAPI space;
+    Computer(SpaceAPI space) throws RemoteException {
+        this.space = space;
+    }
 
     public static void main(String[] args) throws Exception
     {
         SpaceAPI space = RMIUtils.connectToSpace(args[0]);
-        ComputerAPI computer = new Computer();
+        ComputerAPI computer = new Computer(space);
         space.register(computer);
         System.out.println("Computer.main: Ready.");
     }
@@ -27,7 +30,7 @@ class Computer extends UnicastRemoteObject implements ComputerAPI
     @Override
     public Result execute(Task task) throws RemoteException {
         long startTime = System.currentTimeMillis();
-        Object obj = task.execute();
+        Object obj = task.execute(space);
         long endTime = System.currentTimeMillis() - startTime;
         System.out.println("I runs tasks! In: " + endTime + "ms");
         return new Result(obj, endTime);

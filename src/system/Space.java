@@ -9,7 +9,9 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -24,20 +26,28 @@ public class Space extends UnicastRemoteObject implements SpaceAPI {
 
     private final BlockingQueue<Task> tasks;
     private final BlockingQueue<Result> results;
+    private final BlockingQueue<Result> unsorted;
     private final Set<ComputerAPI> computers;
+    private final BlockingQueue<Task> waitingTasks;
 
     /**
      * Creates a compute space for computers ant clients to connect.
+     *
      * @throws RemoteException
      */
     public Space() throws RemoteException {
-        tasks = new LinkedBlockingQueue<Task>();
-        results = new LinkedBlockingQueue<Result>();
-        computers = new HashSet<ComputerAPI>();
+        tasks = new LinkedBlockingQueue<>();
+        results = new LinkedBlockingQueue<>();
+        unsorted = new LinkedBlockingQueue<>();
+        computers = Collections.synchronizedSet(new HashSet<ComputerAPI>());
+        waitingTasks = new LinkedBlockingQueue<>();
+        TaskSorter sorter = new TaskSorter();
+        new Thread(sorter).start();
     }
 
     /**
-     *  Run to set up a compute space and space registry. 
+     * Run to set up a compute space and space registry.
+     *
      * @param args
      * @throws Exception
      */
@@ -58,7 +68,13 @@ public class Space extends UnicastRemoteObject implements SpaceAPI {
     @Override
     public void put(Task task) throws RemoteException {
         try {
-            tasks.put(task);
+//            System.out.println("put task! " + task.getID());
+            if (task.isReady()) {
+                tasks.put(task);
+            } else {
+//                System.out.println("adding waiting task!");
+                waitingTasks.put(task);
+            }
         } catch (InterruptedException ex) {
             Logger.getLogger(Space.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -90,6 +106,54 @@ public class Space extends UnicastRemoteObject implements SpaceAPI {
         new Thread(proxy).start();
         System.out.println("I has a computer!");
     }
+    
+    class TaskSorter implements Runnable {
+
+        @Override
+        public void run() {
+            while(true){
+                try {
+                    Result result = unsorted.take();
+                    processResult(result);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Space.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        
+        private void processResult(Result result) {
+        if (result.getTaskReturnValue() != null) {
+            if(waitingTasks.isEmpty()){
+                try {
+                    results.put(result);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Space.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } else{
+                distributeArgument((Task)result.getTaskReturnValue());
+            }
+        }
+
+    }
+
+    private void distributeArgument(Task taskReturnValue) {
+        for (Iterator<Task> it = waitingTasks.iterator(); it.hasNext();) {
+            Task task = it.next();
+            task.addArgument(taskReturnValue);
+            if (task.isReady()) {
+//                System.out.println("task is ready!");
+                it.remove();
+                try {
+                    tasks.put(task);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Space.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            
+        }
+    }
+    
+    }
 
     class ComputerProxy implements ComputerAPI, Runnable {
 
@@ -117,11 +181,11 @@ public class Space extends UnicastRemoteObject implements SpaceAPI {
                     Result result;
                     try {
                         result = this.execute(task);
+                        unsorted.put(result);
                     } catch (RemoteException ex) {
                         computerDied(task);
                         return;
                     }
-                    results.put(result);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(Space.class.getName()).log(Level.SEVERE, null, ex);
                 }
