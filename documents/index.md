@@ -1,13 +1,14 @@
-CS290B-HW2
+CS290B-HW3
 ==========
 
-ASSIGNMENT 2: A BASIC COMPUTE FARM
+ASSIGNMENT 3: A DIVIDE-AND-CONQUER API
 
-by Karl Lopker and Geoffrey Douglas
+by Karl Lopker
 
 Index
 -----
 - [Readme](readme.html)
 - [Javadoc](javadoc/index.html)
 - [Results & Analysis ](results.html)
-- [Paper Summary](summary.html)
+- [Cilk Summary](cilk.html)
+- [CX Summary](cx.html)
