@@ -19,7 +19,7 @@ import java.util.Set;
 public class AddTask extends Task<AddTask> implements Serializable{
     private final String parentID;
     private final Set<String> joinSet;
-    private final List<Double> arguments;
+    private final List<Integer> arguments;
     private Integer ans;
     
     public AddTask(Task parent, Task... adds) {
@@ -36,10 +36,10 @@ public class AddTask extends Task<AddTask> implements Serializable{
     public AddTask execute(SpaceAPI space) {
         
         ans = 0;
-        for (Double arg : arguments) {
+        for (Integer arg : arguments) {
             ans += (int) arg.doubleValue();
         }
-//        System.out.println("execute add = " + ans);
+        System.out.println("execute add = " + ans);
         return this;
     }
     
@@ -49,7 +49,7 @@ public class AddTask extends Task<AddTask> implements Serializable{
     }
 
     @Override
-    public double getValue() {
+    public Object getValue() {
         return ans;
     }
 
@@ -57,11 +57,12 @@ public class AddTask extends Task<AddTask> implements Serializable{
     public void addArgument(Task argument) {
 //        System.out.println("trying add " + argument.getID());
         if (joinSet.remove(argument.getID().toString())) {
-            System.out.println("added:" + argument.getValue());
-            arguments.add(argument.getValue());
+//            System.out.println("added:" + argument.getValue());
+            arguments.add((Integer)argument.getValue());
         }
     }
     
+    @Override
     public String getID(){
         return this.parentID;
     }

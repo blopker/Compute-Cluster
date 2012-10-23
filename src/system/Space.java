@@ -141,7 +141,7 @@ public class Space extends UnicastRemoteObject implements SpaceAPI {
             Task task = it.next();
             task.addArgument(taskReturnValue);
             if (task.isReady()) {
-//                System.out.println("task is ready!");
+                System.out.println("task is ready!");
                 it.remove();
                 try {
                     tasks.put(task);

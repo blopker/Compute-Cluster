@@ -8,7 +8,6 @@ import api.SpaceAPI;
 import api.Task;
 import java.io.Serializable;
 import java.rmi.RemoteException;
-import java.rmi.dgc.VMID;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,7 +18,7 @@ import java.util.logging.Logger;
  */
 public class FibTask extends Task<FibTask> implements Serializable {
     private final int n;
-    private double value = 0;
+    private Integer value = 0;
     private final String id;
     public FibTask(int n) {
         this.id = UUID.randomUUID().toString();
@@ -49,7 +48,7 @@ public class FibTask extends Task<FibTask> implements Serializable {
     }
 
     @Override
-    public double getValue() {
+    public Object getValue() {
         return value;
     }
 
