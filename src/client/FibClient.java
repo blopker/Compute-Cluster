@@ -40,7 +40,7 @@ public class FibClient {
 
             // Get the results
             Result result = space.take();
-            return (int)((Task)result.getTaskReturnValue()).getValue();
+            return (Integer)((Task)result.getTaskReturnValue()).getValue();
             
         } catch (RemoteException ex) {
             Logger.getLogger(FibClient.class.getName()).log(Level.SEVERE, null, ex);
