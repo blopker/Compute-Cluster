@@ -90,7 +90,7 @@ public class TSPTask extends Task<TSPTask> implements Serializable {
     }
 
     private void makeTasks(SpaceAPI space) {
-        List<TSPTask> tasks = new ArrayList<>();
+        List<TSPTask> tasks = new ArrayList<TSPTask>();
         int[] start_tmp = new int[start.size() + 1];
         for (int i = 0; i < start.size(); i++) {
             start_tmp[i] = start.get(i);
@@ -120,7 +120,7 @@ public class TSPTask extends Task<TSPTask> implements Serializable {
     }
 
     private List<Integer> getInitialTour() {
-        List<Integer> tour = new ArrayList<>();
+        List<Integer> tour = new ArrayList<Integer>();
         for (int i = 0; i < cities.length; i++) {
             if (!start.contains(i)) {
                 tour.add(i);
@@ -144,7 +144,7 @@ public class TSPTask extends Task<TSPTask> implements Serializable {
     }
 
     private List<Integer> addStart(List<Integer> perm) {
-        List<Integer> tour = new ArrayList<>(start);
+        List<Integer> tour = new ArrayList<Integer>(start);
         tour.addAll(perm);
         return tour;
     }
