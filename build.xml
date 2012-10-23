@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="hw2" default="dist" basedir=".">
+<project name="hw3" default="dist" basedir=".">
     <!-- set global properties for this build -->
     <property name="hostname" value="localhost"/>
-    
+    <property name="fork" value="true" />
     <!-- Computer list -->
     <property name="computer1" value="blind.cs.ucsb.edu" />
     <property name="computer2" value="didley.cs.ucsb.edu" />
@@ -12,7 +12,7 @@
     <property name="computer6" value="joplin.cs.ucsb.edu" />
     <property name="computer7" value="kenny.cs.ucsb.edu" />
     <property name="computer8" value="linus.cs.ucsb.edu" />
-    
+
     <property name="src" location="src"/>
     <property name="build" location="build"/>
     <property name="lib"  value="lib"/>
@@ -24,8 +24,8 @@
     <property name="client_web_codebase" value="file://${dist}/client/"/>
     <target name="compile" description="compile the source">
         <!-- Create the build directory structure used by compile -->
-        <mkdir dir="${build}"/>  
-  
+        <mkdir dir="${build}"/>
+
         <!-- Compile the java code from ${src} into ${build} -->
         <javac includeantruntime="false" srcdir="${src}" destdir="${build}">
             <classpath>
@@ -42,7 +42,7 @@
 
         <!-- Make computer jar file -->
         <jar jarfile="${dist}/computer.jar" basedir="${build}" includes="system/** api/**"/>
-    
+
         <!-- Make client jar file -->
         <jar jarfile="${dist}/client.jar" basedir="${build}" includes="client/** api/** tasks/**"/>
         <!-- Copy client's task classes to client's codebase -->
@@ -51,13 +51,13 @@
             <fileset dir="${build}/tasks/"/>
         </copy>
     </target>
-  
+
     <target name="javadoc" description="create javadocs">
         <javadoc packagenames="tasks.*,api.*" sourcepath="${src}" destdir="documents/javadoc" />
     </target>
-    
+
     <target name="runSpace" depends="build" description="run space" >
-        <java classname="system.Space" fork="true">
+        <java classname="system.Space" fork="${fork}">
             <jvmarg value="-Djava.rmi.server.codebase=${computer_web_codebase}"/>
             <jvmarg value="-Djava.security.policy=policy.txt"/>
             <classpath>
@@ -67,10 +67,10 @@
                 </fileset>
             </classpath>
         </java>
-    </target>  
-  
+    </target>
+
     <target name="runComputer" depends="build" description="run computer" >
-        <java classname="system.Computer" fork="true">
+        <java classname="system.Computer" fork="${fork}">
             <jvmarg value="-Djava.rmi.server.codebase=${computer_web_codebase}"/>
             <jvmarg value="-Djava.security.policy=policy.txt"/>
             <arg value="${hostname}"/>
@@ -81,25 +81,25 @@
                 </fileset>
             </classpath>
         </java>
-    </target>  
-    
+    </target>
+
     <target name = "startComputers4" description = "Start Space and 4 Computers">
         <parallel>
-            <sshexec host="${computer1}" username="${username}" password="${pw}" trust="true" command="ant runComputer"/>
-            <sshexec host="${computer2}" username="${username}" password="${pw}" trust="true" command="ant runComputer"/>
-            <sshexec host="${computer3}" username="${username}" password="${pw}" trust="true" command="ant runComputer"/>
-            <sshexec host="${computer4}" username="${username}" password="${pw}" trust="true" command="ant runComputer"/>
+            <sshexec host="${computer1}" username="${username}" password="${pw}" trust="true" command="cd ${dist}/..; ant runComputer"/>
+            <sshexec host="${computer2}" username="${username}" password="${pw}" trust="true" command="cd ${dist}/..; ant runComputer"/>
+            <sshexec host="${computer3}" username="${username}" password="${pw}" trust="true" command="cd ${dist}/..; ant runComputer"/>
+            <sshexec host="${computer4}" username="${username}" password="${pw}" trust="true" command="cd ${dist}/..; ant runComputer"/>
         </parallel>
     </target>
     <target name = "startComputers2" description = "Start Space and 4 Computers">
         <parallel>
-            <sshexec host="${computer3}" username="${username}" password="${pw}" trust="true" command="ant runComputer"/>
-            <sshexec host="${computer4}" username="${username}" password="${pw}" trust="true" command="ant runComputer"/>
+            <sshexec host="${computer3}" username="${username}" password="${pw}" trust="true" command="cd ${dist}/..; ant runComputer"/>
+            <sshexec host="${computer4}" username="${username}" password="${pw}" trust="true" command="cd ${dist}/..; ant runComputer"/>
         </parallel>
     </target>
-    
+
     <target name="runFib" depends="build" description="run client" >
-        <java classname="client.FibClient" fork="true">
+        <java classname="client.FibClient" fork="${fork}">
             <jvmarg value="-Djava.rmi.server.codebase=${client_web_codebase}"/>
             <jvmarg value="-Djava.security.policy=policy.txt"/>
             <arg value="${hostname}"/>
@@ -110,7 +110,7 @@
     </target>
 
     <target name="runSalesman" depends="build" description="run client" >
-        <java classname="client.TSPClient" fork="true">
+        <java classname="client.TSPClient" fork="${fork}">
             <jvmarg value="-Djava.rmi.server.codebase=${client_web_codebase}"/>
             <jvmarg value="-Djava.security.policy=policy.txt"/>
             <arg value="${hostname}"/>
@@ -130,6 +130,6 @@
         <delete dir="${build}"/>
         <delete dir="${dist}"/>
     </target>
-  
+
 </project>
 
