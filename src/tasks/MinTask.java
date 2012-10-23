@@ -27,9 +27,9 @@ class MinTask extends Task<MinTask> implements Serializable{
     public MinTask(double[][] cities, TSPTask aThis, List<TSPTask> tasks) {
         this.cities = cities;
         parentID = aThis.getID();
-        joinSet = new HashSet<>();
-        arguments = new ArrayList<>();
-        ans = new ArrayList<>();
+        joinSet = new HashSet<String>();
+        arguments = new ArrayList<List<Integer>>();
+        ans = new ArrayList<Integer>();
         for (Task addable : tasks) {
             joinSet.add(addable.getID().toString());
 //            System.out.println("task: " + addable.getID());

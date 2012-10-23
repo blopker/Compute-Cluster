@@ -36,11 +36,11 @@ public class Space extends UnicastRemoteObject implements SpaceAPI {
      * @throws RemoteException
      */
     public Space() throws RemoteException {
-        tasks = new LinkedBlockingQueue<>();
-        results = new LinkedBlockingQueue<>();
-        unsorted = new LinkedBlockingQueue<>();
+        tasks = new LinkedBlockingQueue<Task>();
+        results = new LinkedBlockingQueue<Result>();
+        unsorted = new LinkedBlockingQueue<Result>();
         computers = Collections.synchronizedSet(new HashSet<ComputerAPI>());
-        waitingTasks = new LinkedBlockingQueue<>();
+        waitingTasks = new LinkedBlockingQueue<Task>();
         TaskSorter sorter = new TaskSorter();
         new Thread(sorter).start();
     }

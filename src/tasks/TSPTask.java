@@ -15,8 +15,8 @@ public class TSPTask extends Task<TSPTask> implements Serializable {
 
     private final int TOUR_SIZE = 8;
     private double[][] cities;
-    private List<Integer> start = new ArrayList<>();
-    List<Integer> minTour = new ArrayList<>();
+    private List<Integer> start = new ArrayList<Integer>();
+    List<Integer> minTour = new ArrayList<Integer>();
     private double min;
     private final String id;
 

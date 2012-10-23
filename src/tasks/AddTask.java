@@ -24,8 +24,8 @@ public class AddTask extends Task<AddTask> implements Serializable{
     
     public AddTask(Task parent, Task... adds) {
         parentID = parent.getID();
-        joinSet = new HashSet<>();
-        arguments = new ArrayList<>();
+        joinSet = new HashSet<String>();
+        arguments = new ArrayList<Integer>();
         for (Task addable : adds) {
             joinSet.add(addable.getID().toString());
 //            System.out.println("task: " + addable.getID());
