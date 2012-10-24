@@ -28,7 +28,7 @@ public interface SpaceAPI extends Remote {
     /**
      *  Get a result from the compute space. If no results are avaliable, this
      * method blocks.
-     * @return
+     * @return Result
      * @throws RemoteException
      */
     Result take() throws RemoteException;

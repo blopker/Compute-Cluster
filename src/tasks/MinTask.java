@@ -64,10 +64,13 @@ class MinTask extends Task<MinTask> implements Serializable{
         return Math.sqrt(Math.pow(a[0] - b[0], 2) + Math.pow(a[1] - b[1], 2));
     }
 
+    /**
+     * Add a finished TSPTask to be compared with other TSP results.
+     * @param argument 
+     */
     @Override
     public void addArgument(Task argument) {
         if (joinSet.remove(argument.getID().toString())) {
-//            System.out.println("added:" + argument.getValue());
             arguments.add((List<Integer>)argument.getValue());
         }
     }
@@ -77,6 +80,9 @@ class MinTask extends Task<MinTask> implements Serializable{
         return joinSet.isEmpty();
     }
 
+    /**
+     * @return List<Integer> tour of the minimum tour found.
+     */
     @Override
     public Object getValue() {
         return ans;

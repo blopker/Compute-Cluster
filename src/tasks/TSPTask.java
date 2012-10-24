@@ -167,6 +167,10 @@ public class TSPTask extends Task<TSPTask> implements Serializable {
         return min;
     }
 
+    /**
+     * Not used.
+     * @param argument 
+     */
     @Override
     public void addArgument(Task argument) {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -177,6 +181,9 @@ public class TSPTask extends Task<TSPTask> implements Serializable {
         return true;
     }
 
+    /**
+     * @return List<Integer> tour of the minimum tour found.
+     */
     @Override
     public Object getValue() {
         return minTour;

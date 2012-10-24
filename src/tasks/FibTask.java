@@ -47,11 +47,18 @@ public class FibTask extends Task<FibTask> implements Serializable {
         }
     }
 
+    /**
+     * @return Integer answer of F(n).
+     */
     @Override
     public Object getValue() {
         return value;
     }
 
+    /**
+     * Not used.
+     * @param argument 
+     */
     @Override
     public void addArgument(Task argument) {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -62,6 +69,7 @@ public class FibTask extends Task<FibTask> implements Serializable {
         return true;
     }
     
+    @Override
     public String getID(){
         return this.id;
     }

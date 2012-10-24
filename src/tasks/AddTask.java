@@ -48,16 +48,21 @@ public class AddTask extends Task<AddTask> implements Serializable{
         return joinSet.isEmpty();
     }
 
+    /**
+     * @return Integer with the sum of the arguments' values.
+     */
     @Override
     public Object getValue() {
         return ans;
     }
 
+    /**
+     * Add a FibTask to the required arguments list.
+     * @param argument 
+     */
     @Override
     public void addArgument(Task argument) {
-//        System.out.println("trying add " + argument.getID());
         if (joinSet.remove(argument.getID().toString())) {
-//            System.out.println("added:" + argument.getValue());
             arguments.add((Integer)argument.getValue());
         }
     }

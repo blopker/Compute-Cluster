@@ -1,0 +1,208 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><style>html { font-size: 100%; overflow-y: scroll; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+
+body{
+  color:#444;
+  font-family:Georgia, Palatino, 'Palatino Linotype', Times,
+              'Times New Roman', serif,
+              "Hiragino Sans GB", "STXihei", "微软雅黑";
+  font-size:12px;
+  line-height:1.5em;
+  background:#fefefe;
+  width: 45em;
+  margin: 10px auto;
+  padding: 1em;
+  outline: 1300px solid #FAFAFA;
+}
+
+a{ color: #0645ad; text-decoration:none;}
+a:visited{ color: #0b0080; }
+a:hover{ color: #06e; }
+a:active{ color:#faa700; }
+a:focus{ outline: thin dotted; }
+a:hover, a:active{ outline: 0; }
+
+span.backtick {
+  border:1px solid #EAEAEA;
+  border-radius:3px;
+  background:#F8F8F8;
+  padding:0 3px 0 3px;
+}
+
+::-moz-selection{background:rgba(255,255,0,0.3);color:#000}
+::selection{background:rgba(255,255,0,0.3);color:#000}
+
+a::-moz-selection{background:rgba(255,255,0,0.3);color:#0645ad}
+a::selection{background:rgba(255,255,0,0.3);color:#0645ad}
+
+p{
+margin:1em 0;
+}
+
+img{
+max-width:100%;
+}
+
+h1,h2,h3,h4,h5,h6{
+font-weight:normal;
+color:#111;
+line-height:1em;
+}
+h4,h5,h6{ font-weight: bold; }
+h1{ font-size:2.5em; }
+h2{ font-size:2em; border-bottom:1px solid silver; padding-bottom: 5px; }
+h3{ font-size:1.5em; }
+h4{ font-size:1.2em; }
+h5{ font-size:1em; }
+h6{ font-size:0.9em; }
+
+blockquote{
+color:#666666;
+margin:0;
+padding-left: 3em;
+border-left: 0.5em #EEE solid;
+}
+hr { display: block; height: 2px; border: 0; border-top: 1px solid #aaa;border-bottom: 1px solid #eee; margin: 1em 0; padding: 0; }
+
+
+pre , code, kbd, samp {
+  color: #000;
+  font-family: monospace;
+  font-size: 0.88em;
+  border-radius:3px;
+  background-color: #F8F8F8;
+  border: 1px solid #CCC;
+}
+pre { white-space: pre; white-space: pre-wrap; word-wrap: break-word; padding: 5px;}
+pre code { border: 0px !important; }
+code { padding: 0 3px 0 3px; }
+
+b, strong { font-weight: bold; }
+
+dfn { font-style: italic; }
+
+ins { background: #ff9; color: #000; text-decoration: none; }
+
+mark { background: #ff0; color: #000; font-style: italic; font-weight: bold; }
+
+sub, sup { font-size: 75%; line-height: 0; position: relative; vertical-align: baseline; }
+sup { top: -0.5em; }
+sub { bottom: -0.25em; }
+
+ul, ol { margin: 1em 0; padding: 0 0 0 2em; }
+li p:last-child { margin:0 }
+dd { margin: 0 0 0 2em; }
+
+img { border: 0; -ms-interpolation-mode: bicubic; vertical-align: middle; }
+
+table { border-collapse: collapse; border-spacing: 0; }
+td { vertical-align: top; }
+
+@media only screen and (min-width: 480px) {
+body{font-size:14px;}
+}
+
+@media only screen and (min-width: 768px) {
+body{font-size:16px;}
+}
+
+@media print {
+  * { background: transparent !important; color: black !important; filter:none !important; -ms-filter: none !important; }
+  body{font-size:12pt; max-width:100%;}
+  a, a:visited { text-decoration: underline; }
+  hr { height: 1px; border:0; border-bottom:1px solid black; }
+  a[href]:after { content: " (" attr(href) ")"; }
+  abbr[title]:after { content: " (" attr(title) ")"; }
+  .ir a:after, a[href^="javascript:"]:after, a[href^="#"]:after { content: ""; }
+  pre, blockquote { border: 1px solid #999; padding-right: 1em; page-break-inside: avoid; }
+  tr, img { page-break-inside: avoid; }
+  img { max-width: 100% !important; }
+  @page :left { margin: 15mm 20mm 15mm 10mm; }
+  @page :right { margin: 15mm 10mm 15mm 20mm; }
+  p, h2, h3 { orphans: 3; widows: 3; }
+  h2, h3 { page-break-after: avoid; }
+}</style></head><body><h1 id="cs290b-hw3">CS290B-HW3</h1>
+
+<p>ASSIGNMENT 3: A DIVIDE-AND-CONQUER API</p>
+
+<p>by Karl Lopker</p>
+
+<h2 id="results">Results</h2>
+
+<h3 id="fibonacci">Fibonacci</h3>
+
+<p>Calculating F(16) recursively. Best of 4 runs.</p>
+
+<h4 id="same-jvm">Same JVM</h4>
+
+<pre><code>Total Time: 3.467 sec
+</code></pre>
+
+<h4 id="different-jvms-same-machine">Different JVMs, same machine</h4>
+
+<pre><code>Total Time: 2.252 sec
+</code></pre>
+
+<h4 id="different-machines">Different machines.</h4>
+
+<pre><code>Total Time: 2.653 sec
+</code></pre>
+
+<h4 id="parallel-efficiency">Parallel Efficiency</h4>
+
+<pre><code>1. 3096
+2. 1547
+3. 1056
+4. 897
+5. 847
+</code></pre>
+
+<p><img src="file:///home/ninj0x/Documents/CS290B-HW3/documents/fib.PNG" alt="Fib" /></p>
+
+<h3 id="sales-man">Sales Man</h3>
+
+<p>Calculating a 12 city tour with a task split cut off of 8 cities. Best of 4 runs.</p>
+
+<h4 id="same-jvm-2">Same JVM</h4>
+
+<pre><code>Total Time: 37.353 sec
+</code></pre>
+
+<h4 id="different-jvms-same-machine-2">Different JVMs, same machine</h4>
+
+<pre><code>Total Time: 34.047 sec
+</code></pre>
+
+<h4 id="different-machines-2">Different machines.</h4>
+
+<pre><code>Total Time: 34.125 sec
+</code></pre>
+
+<h4 id="parallel-efficiency-multiple-computers">Parallel Efficiency, multiple computers</h4>
+
+<pre><code>1. 33997
+2. 16857
+3. 11188
+4. 8416
+5. 6862
+</code></pre>
+
+<p><img src="file:///home/ninj0x/Documents/CS290B-HW3/documents/tsp.PNG" alt="TSP" /></p>
+
+<h2 id="analysis">Analysis</h2>
+
+<h4 id="what-do-you-see-as-the-advantagesdisadvantages-of-your-task-scheduler">What do you see as the advantages/disadvantages of your task scheduler?</h4>
+
+<p>The task scheduler in use is pretty inefficient. The advantage is that it's simple. Essentially, the Space has a running thread that every time a finished task comes in it loops over the waiting tasks to see if a dependency is met. If it finds a matching dependency the scheduler will check to see if that task is now ready and if so will move it to the ready task queue.</p>
+
+<p>An improvement could be to use a hash table with all the dependencies in it. Each entry would link to the waiting task that needs it. This would take lookup time from O(n) to O(1). Of course this is a speed/memory trade off.</p>
+
+<h4 id="how-might-you-change-the-infrastructure-to-improve-your-parallel-efficiency">How might you change the infrastructure to improve your parallel efficiency?</h4>
+
+<p>Currently the major bottle neck is the one Space. Having many Spaces with their own computers would increase the available task bandwidth.</p>
+
+<p>Also, increasing the work done per task ratio would decrease the umber of tasks and increase parallel efficiency. This can be seen by comparing the efficiencies between the Fibonacci tests (less work) and the Salesman tests (more work). The Salesman tests stay efficient with more computers.</p>
+
+<h4 id="what-issues-are-involved-in-generalizing-your-infrastructure-to-a-network-of-spaces">What issues are involved in generalizing your infrastructure to a network of Spaces?</h4>
+
+<p>Coordinating the Spaces would be a difficult issue to tackle. We would need to figure out the most efficient structure for spaces that is both fast and fault tolerant. Also, weeding out any single point of failure and making sure completed tasks are not lost is important.</p>
+</body>
