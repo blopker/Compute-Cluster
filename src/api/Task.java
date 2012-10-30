@@ -13,7 +13,7 @@ public abstract class Task {
     public abstract <T> Result<T> execute();
     public abstract void addResult(Result argument);
     public abstract boolean isReady();
-    public abstract Object getValue();
+    public abstract void setShared(Shared shared);
     /**
      * @return A unique string for the task. Usually a UUID.
      */

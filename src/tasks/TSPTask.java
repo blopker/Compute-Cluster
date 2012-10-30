@@ -1,7 +1,9 @@
 package tasks;
 
 import api.Result;
+import api.Shared;
 import api.Task;
+import api.UpperBound;
 import com.google.common.collect.Collections2;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -16,6 +18,7 @@ public class TSPTask extends Task implements Serializable {
     List<Integer> minTour = new ArrayList<Integer>();
     private double min;
     private final String id;
+    private UpperBound shared;
 
     /**
      * This task computes the cost of each permutation that solves the Traveling
@@ -64,8 +67,9 @@ public class TSPTask extends Task implements Serializable {
     @Override
     public Result<List<Integer>> execute() {
         if (cities.length - start.size() > TOUR_SIZE) {
+            UpperBound dist = new UpperBound(getTourLength(start));
             List<Task> tasks = makeTasks();
-            return new Result<List<Integer>>(this.id, null, tasks);
+            return new Result<List<Integer>>(this.id, null, tasks, dist);
         }
         min = Double.MAX_VALUE;
         double dist;
@@ -83,7 +87,7 @@ public class TSPTask extends Task implements Serializable {
 //        System.out.println("done!");
 //        System.out.println("Min found!");
 //        printCityList(minTour);
-        return new Result<List<Integer>>(this.id, minTour, null);
+        return new Result<List<Integer>>(this.id, minTour, null, new UpperBound(min));
     }
 
     private List<Task> makeTasks() {
@@ -173,16 +177,16 @@ public class TSPTask extends Task implements Serializable {
         return true;
     }
 
-    /**
-     * @return List<Integer> tour of the minimum tour found.
-     */
-    @Override
-    public Object getValue() {
-        return minTour;
-    }
-
     @Override
     public String getID() {
         return this.id;
+    }
+
+    @Override
+    public void setShared(Shared shared) {
+        if(shared == null){
+            shared = new UpperBound(Double.MAX_VALUE);
+        }
+        this.shared = (UpperBound) shared;
     }
 }

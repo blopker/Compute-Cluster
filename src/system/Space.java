@@ -2,6 +2,7 @@ package system;
 
 import api.ComputerAPI;
 import api.Result;
+import api.Shared;
 import api.SpaceAPI;
 import api.Task;
 import java.rmi.RMISecurityManager;
@@ -30,6 +31,7 @@ public class Space extends UnicastRemoteObject implements SpaceAPI {
     private final BlockingQueue<Result> unsorted;
     private final Set<ComputerAPI> computers;
     private final BlockingQueue<Task> waitingTasks;
+    private Shared shared;
 
     /**
      * Creates a compute space for computers ant clients to connect.
@@ -118,6 +120,12 @@ public class Space extends UnicastRemoteObject implements SpaceAPI {
         new Thread(proxy).start();
         System.out.println("I has a computer!");
     }
+    
+    private synchronized void setShared(Shared shared){
+        if (this.shared == null || shared.isBetterThan(this.shared)) {
+            this.shared = shared;
+        }
+    }
 
     class TaskSorter implements Runnable {
 
@@ -146,6 +154,10 @@ public class Space extends UnicastRemoteObject implements SpaceAPI {
 
             if (result.getNewTasks() != null) {
                 addNewTasks(result.getNewTasks());
+            }
+            
+            if(result.getShared() != null){
+                setShared(result.getShared());
             }
 
         }
@@ -209,6 +221,7 @@ public class Space extends UnicastRemoteObject implements SpaceAPI {
             while (true) {
                 try {
                     Task task = tasks.take();
+                    task.setShared(shared);
                     Result result;
                     try {
                         result = this.execute(task);

@@ -5,8 +5,9 @@
 package tasks;
 
 import api.Result;
-import api.SpaceAPI;
+import api.Shared;
 import api.Task;
+import api.UpperBound;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -24,6 +25,7 @@ class MinTask extends Task implements Serializable{
     private final List<List<Integer>> arguments;
     private List<Integer> ans;
     private double[][] cities;
+    private UpperBound shared;
 
     public MinTask(double[][] cities, TSPTask aThis, List<TSPTask> tasks) {
         this.cities = cities;
@@ -48,7 +50,7 @@ class MinTask extends Task implements Serializable{
                 ans.addAll(tour);
             }
         }
-        return new Result<List<Integer>>(this.parentID, ans, null);
+        return new Result<List<Integer>>(this.parentID, ans, null, new UpperBound(min));
     }
 
     private double getTourLength(List<Integer> tour) {
@@ -81,16 +83,16 @@ class MinTask extends Task implements Serializable{
         return joinSet.isEmpty();
     }
 
-    /**
-     * @return List<Integer> tour of the minimum tour found.
-     */
-    @Override
-    public Object getValue() {
-        return ans;
-    }
-
     @Override
     public String getID() {
         return this.parentID;
+    }
+
+    @Override
+    public void setShared(Shared shared) {
+        if(shared == null){
+            shared = new UpperBound(Double.MAX_VALUE);
+        }
+        this.shared = (UpperBound) shared;
     }
 }

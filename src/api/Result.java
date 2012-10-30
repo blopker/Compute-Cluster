@@ -11,6 +11,7 @@ public class Result<T> implements Serializable {
     private List<? extends Task> newTasks;
     private T taskReturnValue;
     private long taskRunTime;
+    private Shared shared;
     private String id;
     
     /**
@@ -19,10 +20,11 @@ public class Result<T> implements Serializable {
      * @param taskReturnValue
      * @param taskRunTime
      */
-    public Result(String id, T taskReturnValue, List<? extends Task> newTasks) {
+    public Result(String id, T taskReturnValue, List<? extends Task> newTasks, Shared shared) {
         this.taskReturnValue = taskReturnValue;
         this.newTasks = newTasks;
         this.id = id;
+        this.shared = shared;
     }
 
     /**
@@ -36,6 +38,10 @@ public class Result<T> implements Serializable {
     
     public List<? extends Task> getNewTasks(){
         return newTasks;
+    }
+    
+    public Shared getShared(){
+        return this.shared;
     }
     
     /**
