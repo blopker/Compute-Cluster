@@ -9,21 +9,25 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
 /**
- * Implements the ComputerAPI and can execute tasks when asked nicely. 
+ * Implements the ComputerAPI and can execute tasks when asked nicely.
+ *
  * @author karl
  */
-class Computer extends UnicastRemoteObject implements ComputerAPI
-{
+class Computer extends UnicastRemoteObject implements ComputerAPI {
+
     private SpaceAPI space;
+
     Computer(SpaceAPI space) throws RemoteException {
         this.space = space;
     }
 
-    public static void main(String[] args) throws Exception
-    {
+    public static void main(String[] args) throws Exception {
         SpaceAPI space = RMIUtils.connectToSpace(args[0]);
-        ComputerAPI computer = new Computer(space);
-        space.register(computer);
+        int cores = Runtime.getRuntime().availableProcessors();
+        for (int i = 0; i < cores; i++) {
+            space.register(new Computer(space));
+            System.out.println("Computer " + i + ": Ready.");
+        }
         System.out.println("Computer.main: Ready.");
     }
 
