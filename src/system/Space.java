@@ -12,6 +12,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -137,26 +138,24 @@ public class Space extends UnicastRemoteObject implements SpaceAPI {
             if (result.getResult() != null) {
                 // no wiating tasks, so this must be the final answer
                 if (waitingTasks.isEmpty()) {
-                    try {
-                        results.put(result);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(Space.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                    pushFinalResult(result);
                 } else {
                     distributeArgument(result);
                 }
             }
-            
-            if(result.getNewTasks() != null){
-                for (Object task : result.getNewTasks()) {
-                    try {
-                        put((Task) task);
-                    } catch (RemoteException ex) {
-                        Logger.getLogger(Space.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
+
+            if (result.getNewTasks() != null) {
+                addNewTasks(result.getNewTasks());
             }
 
+        }
+
+        private <T> void pushFinalResult(Result<T> result) {
+            try {
+                results.put(result);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Space.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
         private void distributeArgument(Result taskReturnValue) {
@@ -173,6 +172,16 @@ public class Space extends UnicastRemoteObject implements SpaceAPI {
                     }
                 }
 
+            }
+        }
+
+        private void addNewTasks(List<? extends Task> tasks) {
+            for (Task task : tasks) {
+                try {
+                    put(task);
+                } catch (RemoteException ex) {
+                    Logger.getLogger(Space.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
     }
