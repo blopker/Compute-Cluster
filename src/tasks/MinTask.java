@@ -4,6 +4,7 @@
  */
 package tasks;
 
+import api.Result;
 import api.SpaceAPI;
 import api.Task;
 import java.io.Serializable;
@@ -16,7 +17,7 @@ import java.util.Set;
  *
  * @author ninj0x
  */
-class MinTask extends Task<MinTask> implements Serializable{
+class MinTask extends Task implements Serializable{
 
     private final String parentID;
     private final Set<String> joinSet;
@@ -37,7 +38,7 @@ class MinTask extends Task<MinTask> implements Serializable{
     }
 
     @Override
-    public MinTask execute(SpaceAPI space) {
+    public Result<List<Integer>> execute() {
         double min = Double.MAX_VALUE;
         for (List<Integer> tour : arguments) {
             double dist = getTourLength(tour);
@@ -47,7 +48,7 @@ class MinTask extends Task<MinTask> implements Serializable{
                 ans.addAll(tour);
             }
         }
-        return this;
+        return new Result<List<Integer>>(this.parentID, ans, null);
     }
 
     private double getTourLength(List<Integer> tour) {
@@ -69,9 +70,9 @@ class MinTask extends Task<MinTask> implements Serializable{
      * @param argument 
      */
     @Override
-    public void addArgument(Task argument) {
-        if (joinSet.remove(argument.getID().toString())) {
-            arguments.add((List<Integer>)argument.getValue());
+    public void addResult(Result argument) {
+        if (joinSet.remove(argument.getID())) {
+            arguments.add((List<Integer>)argument.getResult());
         }
     }
 

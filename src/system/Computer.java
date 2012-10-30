@@ -34,10 +34,11 @@ class Computer extends UnicastRemoteObject implements ComputerAPI {
     @Override
     public Result execute(Task task) throws RemoteException {
         long startTime = System.currentTimeMillis();
-        Object obj = task.execute(space);
+        Result result = task.execute();
         long endTime = System.currentTimeMillis() - startTime;
         System.out.println("I runs tasks! In: " + endTime + "ms");
-        return new Result(obj, endTime);
+        result.setTaskRunTime(endTime);
+        return result;
     }
 
     @Override

@@ -30,6 +30,20 @@ import tasks.TSPTask;
  */
 public class TSPClient {
 private static int N_PIXELS = 250;
+//    private static double[][] cities = {
+//        {1, 1},
+//        {8, 1},
+//        {8, 8},
+//        {1, 8},
+//        {2, 2},
+//        {7, 2},
+//        {7, 7},
+//        {2, 7},
+//        {3, 3},
+//        {6, 3},
+//        {6, 6},
+//        {3, 6}
+//    };
     private static double[][] cities = {
         {1, 1},
         {8, 1},
@@ -41,10 +55,8 @@ private static int N_PIXELS = 250;
         {2, 7},
         {3, 3},
         {6, 3},
-        {6, 6},
-        {3, 6}
+        {6, 6}
     };
-
     public static void main(String[] args) {
         SpaceAPI space = RMIUtils.connectToSpace(args[0]);
 
@@ -64,11 +76,11 @@ private static int N_PIXELS = 250;
             space.put(task);
 
             // Get the results
-            Result result = space.take();
-            return (List<Integer>) ((Task) result.getTaskReturnValue()).getValue();
+            Result<List<Integer>> result = space.take();
+            return result.getResult();
 
         } catch (RemoteException ex) {
-            Logger.getLogger(FibClient.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TSPClient.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }

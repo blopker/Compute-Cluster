@@ -1,17 +1,14 @@
 package tasks;
 
-import api.SpaceAPI;
+import api.Result;
 import api.Task;
 import com.google.common.collect.Collections2;
 import java.io.Serializable;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-public class TSPTask extends Task<TSPTask> implements Serializable {
+public class TSPTask extends Task implements Serializable {
 
     private final int TOUR_SIZE = 8;
     private double[][] cities;
@@ -65,17 +62,17 @@ public class TSPTask extends Task<TSPTask> implements Serializable {
     }
 
     @Override
-    public TSPTask execute(SpaceAPI space) {
+    public Result<List<Integer>> execute() {
         if (cities.length - start.size() > TOUR_SIZE) {
-            makeTasks(space);
-            return null;
+            List<Task> tasks = makeTasks();
+            return new Result<List<Integer>>(this.id, null, tasks);
         }
         min = Double.MAX_VALUE;
         double dist;
 
-        List<Integer> tour;
+        List<Integer> tour = new ArrayList<Integer>();
         for (List<Integer> perm : Collections2.permutations(getInitialTour())) {
-            tour = addStart(perm);
+            addStart(tour, perm);
             dist = getTourLength(tour);
             if (min > dist) {
                 min = dist;
@@ -84,13 +81,13 @@ public class TSPTask extends Task<TSPTask> implements Serializable {
             }
         }
 //        System.out.println("done!");
-        System.out.println("Min found!");
+//        System.out.println("Min found!");
 //        printCityList(minTour);
-        return this;
+        return new Result<List<Integer>>(this.id, minTour, null);
     }
 
-    private void makeTasks(SpaceAPI space) {
-        List<TSPTask> tasks = new ArrayList<TSPTask>();
+    private List<Task> makeTasks() {
+        List<TSPTask> tspTasks = new ArrayList<TSPTask>();
         int[] start_tmp = new int[start.size() + 1];
         for (int i = 0; i < start.size(); i++) {
             start_tmp[i] = start.get(i);
@@ -98,18 +95,13 @@ public class TSPTask extends Task<TSPTask> implements Serializable {
         for (int i = 0; i < cities.length; i++) {
             if (!start.contains(i)) {
                 start_tmp[start.size()] = i;
-                tasks.add(new TSPTask(start_tmp, cities));
+                tspTasks.add(new TSPTask(start_tmp, cities));
             }
         }
-        try {
-            for (TSPTask tSPTask : tasks) {
-                space.put(tSPTask);
-            }
-            space.put(new MinTask(cities, this, tasks));
-        } catch (RemoteException ex) {
-            Logger.getLogger(TSPTask.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
+        List<Task> tasks = new ArrayList<Task>();
+        tasks.addAll(tspTasks);
+        tasks.add(new MinTask(cities, this, tspTasks));
+        return tasks;
     }
 
     private void printCityList(List<Integer> tour) {
@@ -143,10 +135,10 @@ public class TSPTask extends Task<TSPTask> implements Serializable {
         return Math.sqrt(Math.pow(a[0] - b[0], 2) + Math.pow(a[1] - b[1], 2));
     }
 
-    private List<Integer> addStart(List<Integer> perm) {
-        List<Integer> tour = new ArrayList<Integer>(start);
-        tour.addAll(perm);
-        return tour;
+    private void addStart(List<Integer> out, List<Integer> in) {
+        out.clear();
+        out.addAll(start);
+        out.addAll(in);
     }
 
     /**
@@ -172,7 +164,7 @@ public class TSPTask extends Task<TSPTask> implements Serializable {
      * @param argument 
      */
     @Override
-    public void addArgument(Task argument) {
+    public void addResult(Result argument) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

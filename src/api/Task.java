@@ -2,17 +2,16 @@ package api;
 
 /**
  *Represents a task to be completed by a computer.
- * @param <T> 
  * @author klopker
  */
-public abstract class Task<T> {
+public abstract class Task {
    
     /**
      *  When called, the task should complete its work and return the results.
      * @return T
      */
-    public abstract T execute(SpaceAPI space);
-    public abstract void addArgument(Task argument);
+    public abstract <T> Result<T> execute();
+    public abstract void addResult(Result argument);
     public abstract boolean isReady();
     public abstract Object getValue();
     /**

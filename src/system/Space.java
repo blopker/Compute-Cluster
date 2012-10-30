@@ -58,11 +58,22 @@ public class Space extends UnicastRemoteObject implements SpaceAPI {
         // construct an rmiregistry within this JVM using the default port
         Registry registry = LocateRegistry.createRegistry(SpaceAPI.SERVICE_PORT);
 
-        SpaceAPI space = new Space();
+        final SpaceAPI space = new Space();
 
         registry.rebind(SpaceAPI.SERVICE_NAME, space);
 
         System.out.println("Space: Ready.");
+
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                try {
+                    space.exit();
+                } catch (RemoteException ex) {
+                    Logger.getLogger(Space.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
     }
 
     @Override
@@ -106,12 +117,12 @@ public class Space extends UnicastRemoteObject implements SpaceAPI {
         new Thread(proxy).start();
         System.out.println("I has a computer!");
     }
-    
+
     class TaskSorter implements Runnable {
 
         @Override
         public void run() {
-            while(true){
+            while (true) {
                 try {
                     Result result = unsorted.take();
                     processResult(result);
@@ -120,39 +131,50 @@ public class Space extends UnicastRemoteObject implements SpaceAPI {
                 }
             }
         }
-        
-        private void processResult(Result result) {
-        if (result.getTaskReturnValue() != null) {
-            if(waitingTasks.isEmpty()){
-                try {
-                    results.put(result);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(Space.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            } else{
-                distributeArgument((Task)result.getTaskReturnValue());
-            }
-        }
 
-    }
+        private <T> void processResult(Result<T> result) {
 
-    private void distributeArgument(Task taskReturnValue) {
-        for (Iterator<Task> it = waitingTasks.iterator(); it.hasNext();) {
-            Task task = it.next();
-            task.addArgument(taskReturnValue);
-            if (task.isReady()) {
-                System.out.println("task is ready!");
-                it.remove();
-                try {
-                    tasks.put(task);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(Space.class.getName()).log(Level.SEVERE, null, ex);
+            if (result.getResult() != null) {
+                // no wiating tasks, so this must be the final answer
+                if (waitingTasks.isEmpty()) {
+                    try {
+                        results.put(result);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Space.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } else {
+                    distributeArgument(result);
                 }
             }
             
+            if(result.getNewTasks() != null){
+                for (Object task : result.getNewTasks()) {
+                    try {
+                        put((Task) task);
+                    } catch (RemoteException ex) {
+                        Logger.getLogger(Space.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+
         }
-    }
-    
+
+        private void distributeArgument(Result taskReturnValue) {
+            for (Iterator<Task> it = waitingTasks.iterator(); it.hasNext();) {
+                Task task = it.next();
+                task.addResult(taskReturnValue);
+                if (task.isReady()) {
+                    System.out.println("task is ready!");
+                    it.remove();
+                    try {
+                        tasks.put(task);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Space.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+
+            }
+        }
     }
 
     class ComputerProxy implements ComputerAPI, Runnable {
