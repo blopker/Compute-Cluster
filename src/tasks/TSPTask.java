@@ -66,14 +66,25 @@ public class TSPTask extends Task implements Serializable {
 
     @Override
     public Result<List<Integer>> execute() {
+        UpperBound startDist = new UpperBound(getTourLength(start));
         if (cities.length - start.size() > TOUR_SIZE) {
-            UpperBound dist = new UpperBound(getTourLength(start));
-            List<Task> tasks = makeTasks();
-            return new Result<List<Integer>>(this.id, null, tasks, dist);
+            if (startDist.isBetterThan(shared)) {
+                List<Task> tasks = makeTasks();
+//                System.out.println("Not Canceled! " + shared.getShared() + " " + startDist.getShared());
+                return new Result<List<Integer>>(this.id, null, tasks, null);
+            }
+            System.out.println("Canceled1! " + shared.getShared() + " " + startDist.getShared());
+            return new Result<List<Integer>>(this.id, minTour, null, null);
         }
-        min = Double.MAX_VALUE;
+
+        min = shared.getShared();
         double dist;
 
+        if(shared.isBetterThan(startDist)){
+            System.out.println("Canceled2! " + shared.getShared() + " " + startDist.getShared());
+            return new Result<List<Integer>>(this.id, minTour, null, null);
+        }
+        
         List<Integer> tour = new ArrayList<Integer>();
         for (List<Integer> perm : Collections2.permutations(getInitialTour())) {
             addStart(tour, perm);
@@ -165,7 +176,8 @@ public class TSPTask extends Task implements Serializable {
 
     /**
      * Not used.
-     * @param argument 
+     *
+     * @param argument
      */
     @Override
     public void addResult(Result argument) {
@@ -184,7 +196,7 @@ public class TSPTask extends Task implements Serializable {
 
     @Override
     public void setShared(Shared shared) {
-        if(shared == null){
+        if (shared == null) {
             shared = new UpperBound(Double.MAX_VALUE);
         }
         this.shared = (UpperBound) shared;

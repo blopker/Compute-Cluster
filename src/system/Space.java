@@ -15,7 +15,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,7 +28,7 @@ import java.util.logging.Logger;
  */
 public class Space extends UnicastRemoteObject implements SpaceAPI {
 
-    private final BlockingQueue<Task> tasks;
+    private final BlockingDeque<Task> tasks;
     private final BlockingQueue<Result> results;
     private final BlockingQueue<Result> unsorted;
     private final Set<ComputerAPI> computers;
@@ -39,7 +41,7 @@ public class Space extends UnicastRemoteObject implements SpaceAPI {
      * @throws RemoteException
      */
     public Space() throws RemoteException {
-        tasks = new LinkedBlockingQueue<Task>();
+        tasks = new LinkedBlockingDeque<Task>();
         results = new LinkedBlockingQueue<Result>();
         unsorted = new LinkedBlockingQueue<Result>();
         computers = Collections.synchronizedSet(new HashSet<ComputerAPI>());
@@ -92,7 +94,7 @@ public class Space extends UnicastRemoteObject implements SpaceAPI {
         } catch (InterruptedException ex) {
             Logger.getLogger(Space.class.getName()).log(Level.SEVERE, null, ex);
         }
-        System.out.println("I has a task!");
+//        System.out.println("I has a task!");
     }
 
     @Override
@@ -110,7 +112,6 @@ public class Space extends UnicastRemoteObject implements SpaceAPI {
         for (ComputerAPI computer : computers) {
             computer.exit();
         }
-        System.exit(0);
     }
 
     @Override
@@ -120,10 +121,14 @@ public class Space extends UnicastRemoteObject implements SpaceAPI {
         new Thread(proxy).start();
         System.out.println("I has a computer!");
     }
-    
-    private synchronized void setShared(Shared shared){
+
+    private synchronized void setShared(Shared shared) {
+        if (shared == null) {
+            return;
+        }
         if (this.shared == null || shared.isBetterThan(this.shared)) {
             this.shared = shared;
+            System.out.println("new shared: " + this.shared.getShared());
         }
     }
 
@@ -155,8 +160,8 @@ public class Space extends UnicastRemoteObject implements SpaceAPI {
             if (result.getNewTasks() != null) {
                 addNewTasks(result.getNewTasks());
             }
-            
-            if(result.getShared() != null){
+
+            if (result.getShared() != null) {
                 setShared(result.getShared());
             }
 
@@ -164,6 +169,7 @@ public class Space extends UnicastRemoteObject implements SpaceAPI {
 
         private <T> void pushFinalResult(Result<T> result) {
             try {
+                shared = null;
                 results.put(result);
             } catch (InterruptedException ex) {
                 Logger.getLogger(Space.class.getName()).log(Level.SEVERE, null, ex);
@@ -175,10 +181,10 @@ public class Space extends UnicastRemoteObject implements SpaceAPI {
                 Task task = it.next();
                 task.addResult(taskReturnValue);
                 if (task.isReady()) {
-                    System.out.println("task is ready!");
+//                    System.out.println("task is ready!");
                     it.remove();
                     try {
-                        tasks.put(task);
+                        tasks.putLast(task);
                     } catch (InterruptedException ex) {
                         Logger.getLogger(Space.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -220,7 +226,7 @@ public class Space extends UnicastRemoteObject implements SpaceAPI {
         public void run() {
             while (true) {
                 try {
-                    Task task = tasks.take();
+                    Task task = tasks.takeLast();
                     task.setShared(shared);
                     Result result;
                     try {

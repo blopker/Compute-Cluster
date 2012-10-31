@@ -36,7 +36,7 @@ class Computer extends UnicastRemoteObject implements ComputerAPI {
         long startTime = System.currentTimeMillis();
         Result result = task.execute();
         long endTime = System.currentTimeMillis() - startTime;
-        System.out.println("I runs tasks! In: " + endTime + "ms");
+//        System.out.println("I runs tasks! In: " + endTime + "ms");
         result.setTaskRunTime(endTime);
         return result;
     }

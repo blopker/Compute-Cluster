@@ -43,6 +43,9 @@ class MinTask extends Task implements Serializable{
     public Result<List<Integer>> execute() {
         double min = Double.MAX_VALUE;
         for (List<Integer> tour : arguments) {
+            if(tour == null || tour.isEmpty()){
+                continue;
+            }
             double dist = getTourLength(tour);
             if (dist < min) {
                 min = dist;

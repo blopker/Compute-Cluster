@@ -30,33 +30,27 @@ import tasks.TSPTask;
  */
 public class TSPClient {
 private static int N_PIXELS = 250;
-//    private static double[][] cities = {
-//        {1, 1},
-//        {8, 1},
-//        {8, 8},
-//        {1, 8},
-//        {2, 2},
-//        {7, 2},
-//        {7, 7},
-//        {2, 7},
-//        {3, 3},
-//        {6, 3},
-//        {6, 6},
-//        {3, 6}
-//    };
-    private static double[][] cities = {
-        {1, 1},
-        {8, 1},
-        {8, 8},
-        {1, 8},
-        {2, 2},
-        {7, 2},
-        {7, 7},
-        {2, 7},
-        {3, 3},
-        {6, 3},
-        {6, 6}
-    };
+
+  private static double[][] cities = 
+{
+	{ 1, 1 },
+	{ 8, 1 },
+	{ 8, 8 },
+	{ 1, 8 },
+	{ 2, 2 },
+	{ 7, 2 },
+	{ 7, 7 },
+	{ 2, 7 },
+	{ 3, 3 },
+	{ 6, 3 },
+	{ 6, 6 },
+	{ 3, 6 }//,
+//	{ 4, 4 },
+//	{ 5, 4 },
+//	{ 5, 5 },
+//	{ 4, 5 }
+};
+
     public static void main(String[] args) {
         SpaceAPI space = RMIUtils.connectToSpace(args[0]);
 
