@@ -1,12 +1,11 @@
-CS290B-HW3
+CS290B-HW4
 ==========
 
-ASSIGNMENT 3: A DIVIDE-AND-CONQUER API
+ASSIGNMENT 4
 
 Purpose
 -------
-- Expand your experience working with Java RMI
-- Augment the functionality of your Java-centric cluster computing system to support a divide-and-conquer (DAC) API.
+The purpose of this assignment is to enhance your API and infrastructure to support branch-and-bound.
 
 Usage
 -----
@@ -18,5 +17,4 @@ Run the runComputer directive as many times as necessary.
 
 	ant runSpace
 	ant runComputer
-	ant runFib
 	ant runSalesman

@@ -15,10 +15,12 @@ public class Result<T> implements Serializable {
     private String id;
     
     /**
-     *  An object that contains a task result and the task runtime.
+     * The result package that is sent to the system.
      * Use null if the task doesn't have some of the values.
-     * @param taskReturnValue
-     * @param taskRunTime
+     * @param id Dependancy ID
+     * @param taskReturnValue Task result value
+     * @param newTasks New Tasks to be added to the task queue
+     * @param shared The shared object to be updated.
      */
     public Result(String id, T taskReturnValue, List<? extends Task> newTasks, Shared shared) {
         this.taskReturnValue = taskReturnValue;
@@ -29,7 +31,7 @@ public class Result<T> implements Serializable {
 
     /**
      *  This must be cast to the correct result type for the task.
-     * @return Object
+     * @return T
      */
     public T getResult() {
         return taskReturnValue;
@@ -46,7 +48,6 @@ public class Result<T> implements Serializable {
     
     /**
      *  Set the computation time as seen by the computer.
-     * @return Time in milliseconds.
      */
     public void setTaskRunTime(long taskTime) {
         this.taskRunTime = taskTime;

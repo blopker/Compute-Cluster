@@ -1,7 +1,7 @@
-CS290B-HW3
+CS290B-HW4
 ==========
 
-ASSIGNMENT 3: A DIVIDE-AND-CONQUER API
+ASSIGNMENT 4
 
 by Karl Lopker
 
@@ -10,5 +10,5 @@ Index
 - [Readme](readme.html)
 - [Javadoc](javadoc/index.html)
 - [Results & Analysis ](results.html)
-- [Cilk Summary](cilk.html)
-- [CX Summary](cx.html)
+- [Design Document](design.html)
+- [Branch & Bound Summary](bb.html)

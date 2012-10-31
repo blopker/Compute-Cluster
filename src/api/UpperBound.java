@@ -1,11 +1,7 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package api;
 
 /**
- *
+ * The upper bound shared object. Used to find minium upper bounds of doubles.
  * @author ninj0x
  */
 public class UpperBound extends Shared<Double> {
