@@ -44,6 +44,7 @@ public class RMIUtils {
         } catch (RemoteException ex) {
             Logger.getLogger(RMIUtils.class.getName()).log(Level.SEVERE, null, ex);
         }
+        System.exit(1);
         return null;
     }
 }
