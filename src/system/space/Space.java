@@ -12,7 +12,6 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.BlockingQueue;
@@ -27,11 +26,11 @@ import java.util.logging.Logger;
  * @author ninj0x
  */
 public class Space extends UnicastRemoteObject implements SpaceAPI {
-    
+
     private final BlockingDeque<Task> tasks;
     private final BlockingQueue<Result> results;
     private final BlockingQueue<Result> unsorted;
-    private final Set<ComputerAPI> computers;
+    private final static Set<ComputerAPI> computers = Collections.synchronizedSet(new HashSet<ComputerAPI>());
     private final ConcurrentHashMap<String, Task> waitingTasks;
     private Shared shared;
 
@@ -44,7 +43,6 @@ public class Space extends UnicastRemoteObject implements SpaceAPI {
         tasks = new LinkedBlockingDeque<Task>();
         results = new LinkedBlockingQueue<Result>();
         unsorted = new LinkedBlockingQueue<Result>();
-        computers = Collections.synchronizedSet(new HashSet<ComputerAPI>());
         waitingTasks = new ConcurrentHashMap<String, Task>();
         new Thread(new ResultSorter(this)).start();
     }
@@ -61,25 +59,27 @@ public class Space extends UnicastRemoteObject implements SpaceAPI {
 
         // construct an rmiregistry within this JVM using the default port
         Registry registry = LocateRegistry.createRegistry(SpaceAPI.SERVICE_PORT);
-        
+
         final SpaceAPI space = new Space();
-        
+
         registry.rebind(SpaceAPI.SERVICE_NAME, space);
-        
+
         System.out.println("Space: Ready.");
-        
+
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
                 try {
-                    space.exit();
+                    for (ComputerAPI computer : computers) {
+                        computer.exit();
+                    }
                 } catch (RemoteException ex) {
                     Logger.getLogger(Space.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
     }
-    
+
     @Override
     public void put(Task task) throws RemoteException {
         try {
@@ -89,7 +89,7 @@ public class Space extends UnicastRemoteObject implements SpaceAPI {
             Logger.getLogger(Space.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     @Override
     public Result take() throws RemoteException {
         try {
@@ -105,14 +105,14 @@ public class Space extends UnicastRemoteObject implements SpaceAPI {
         }
         return null;
     }
-    
+
     @Override
     public void exit() throws RemoteException {
         for (ComputerAPI computer : computers) {
             computer.exit();
         }
     }
-    
+
     @Override
     public void register(ComputerAPI computer) throws RemoteException {
         ComputerProxy proxy = new ComputerProxy(computer, this);
@@ -120,7 +120,7 @@ public class Space extends UnicastRemoteObject implements SpaceAPI {
         new Thread(proxy).start();
         System.out.println("I has a computer!");
     }
-    
+
     protected synchronized void setShared(Shared shared) {
         if (shared == null) {
             return;
@@ -130,15 +130,15 @@ public class Space extends UnicastRemoteObject implements SpaceAPI {
             System.out.println("new shared: " + this.shared.getShared());
         }
     }
-    
+
     protected Shared getShared() {
         return shared;
     }
-    
+
     protected Task getReadyTask() throws InterruptedException {
         return tasks.takeLast();
     }
-    
+
     protected void addTask(Task task) throws InterruptedException {
         if (task.isReady()) {
             tasks.putLast(task);
@@ -146,28 +146,28 @@ public class Space extends UnicastRemoteObject implements SpaceAPI {
             waitingTasks.put(task.getID(), task);
         }
     }
-    
-    protected void removeComputer(ComputerAPI computer){
+
+    protected void removeComputer(ComputerAPI computer) {
         computers.remove(computer);
     }
-    
-    protected void addResult(Result result) throws InterruptedException{
+
+    protected void addResult(Result result) throws InterruptedException {
         unsorted.put(result);
     }
-    
-    protected Result getResult() throws InterruptedException{
+
+    protected Result getResult() throws InterruptedException {
         return unsorted.take();
     }
-    
-    protected void setFinalResult(Result result) throws InterruptedException{
+
+    protected void setFinalResult(Result result) throws InterruptedException {
         results.put(result);
     }
-    
-    protected void addArgument(Result result){
+
+    protected void addArgument(Result result) {
         if (result.getID() == null || !waitingTasks.containsKey(result.getID())) {
             return;
         }
-        
+
         Task task = waitingTasks.get(result.getID());
         task.addResult(result);
         if (task.isReady()) {
@@ -179,8 +179,8 @@ public class Space extends UnicastRemoteObject implements SpaceAPI {
             }
         }
     }
-    
-    protected int getWaitingTaskCount(){
+
+    protected int getWaitingTaskCount() {
         return waitingTasks.size();
     }
 }

@@ -32,7 +32,12 @@ class ComputerProxy implements ComputerAPI, Runnable {
 
     @Override
     public void exit() throws RemoteException {
-        realComputer.exit();
+        try{
+            realComputer.exit();
+        } catch (RemoteException re){
+            
+        }
+        
     }
 
     @Override
