@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="hw4" default="dist" basedir=".">
+<project name="hw5" default="dist" basedir=".">
     <!-- set global properties for this build -->
     <property name="hostname" value="localhost"/>
     <property name="fork" value="true" />
@@ -57,7 +57,7 @@
     </target>
 
     <target name="runSpace" depends="build" description="run space" >
-        <java classname="system.Space" fork="${fork}">
+        <java classname="system.space.Space" fork="${fork}">
             <jvmarg value="-Djava.rmi.server.codebase=${computer_web_codebase}"/>
             <jvmarg value="-Djava.security.policy=policy.txt"/>
             <classpath>
