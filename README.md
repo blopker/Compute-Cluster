@@ -5,7 +5,10 @@ ASSIGNMENT 5
 
 Purpose
 -------
-The purpose of this assignment is to enhance your API and infrastructure to support branch-and-bound.
+The purpose of this programming assignment is to:
+
+- Exploit multi-core processors when used as compute servers.
+- Amerliorate communication latency.
 
 Usage
 -----
