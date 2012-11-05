@@ -13,37 +13,35 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  *
  * @author ninj0x
  */
-class MinTask extends Task implements Serializable{
+class MinTask extends Task implements Serializable {
 
-    private final String parentID;
-    private final Set<String> joinSet;
+    private String childID = null;
+    private final String ID;
+    private int joinCount;
     private final List<List<Integer>> arguments;
     private List<Integer> ans;
     private double[][] cities;
     private UpperBound shared;
 
-    public MinTask(double[][] cities, TSPTask aThis, List<TSPTask> tasks) {
+    public MinTask(double[][] cities, int number_of_arguments) {
         this.cities = cities;
-        parentID = aThis.getID();
-        joinSet = new HashSet<String>();
+        this.ID = UUID.randomUUID().toString();
         arguments = new ArrayList<List<Integer>>();
         ans = new ArrayList<Integer>();
-        for (Task addable : tasks) {
-            joinSet.add(addable.getID().toString());
-//            System.out.println("task: " + addable.getID());
-        }
+        this.joinCount = number_of_arguments;
     }
 
     @Override
     public Result<List<Integer>> execute() {
         double min = Double.MAX_VALUE;
         for (List<Integer> tour : arguments) {
-            if(tour == null || tour.isEmpty()){
+            if (tour == null || tour.isEmpty()) {
                 continue;
             }
             double dist = getTourLength(tour);
@@ -53,7 +51,7 @@ class MinTask extends Task implements Serializable{
                 ans.addAll(tour);
             }
         }
-        return new Result<List<Integer>>(this.parentID, ans, null, new UpperBound(min));
+        return new Result<List<Integer>>(this.getChildID(), ans, null, new UpperBound(min));
     }
 
     private double getTourLength(List<Integer> tour) {
@@ -72,30 +70,40 @@ class MinTask extends Task implements Serializable{
 
     /**
      * Add a finished TSPTask to be compared with other TSP results.
-     * @param argument 
+     *
+     * @param argument
      */
     @Override
     public void addResult(Result argument) {
-        if (joinSet.remove(argument.getID())) {
-            arguments.add((List<Integer>)argument.getResult());
+        if (joinCount > 0) {
+            joinCount--;
+            arguments.add((List<Integer>) argument.getResult());
         }
     }
 
     @Override
     public boolean isReady() {
-        return joinSet.isEmpty();
+        return joinCount <= 0;
     }
 
     @Override
     public String getID() {
-        return this.parentID;
+        return this.ID;
     }
 
     @Override
     public void setShared(Shared shared) {
-        if(shared == null){
+        if (shared == null) {
             shared = new UpperBound(Double.MAX_VALUE);
         }
         this.shared = (UpperBound) shared;
+    }
+
+    public String getChildID() {
+        return childID;
+    }
+
+    public void setChildID(String child_id) {
+        this.childID = child_id;
     }
 }

@@ -12,6 +12,7 @@ import java.util.UUID;
 
 public class TSPTask extends Task implements Serializable {
 
+    private String childID = null;
     private final int TOUR_SIZE = 8;
     private double[][] cities;
     private List<Integer> start = new ArrayList<Integer>();
@@ -71,20 +72,20 @@ public class TSPTask extends Task implements Serializable {
             if (startDist.isBetterThan(shared)) {
                 List<Task> tasks = makeTasks();
 //                System.out.println("Not Canceled! " + shared.getShared() + " " + startDist.getShared());
-                return new Result<List<Integer>>(this.id, null, tasks, null);
+                return new Result<List<Integer>>(this.getChildID(), null, tasks, null);
             }
             System.out.println("Canceled1! " + shared.getShared() + " " + startDist.getShared());
-            return new Result<List<Integer>>(this.id, minTour, null, null);
+            return new Result<List<Integer>>(this.getChildID(), minTour, null, null);
         }
 
         min = shared.getShared();
         double dist;
 
-        if(shared.isBetterThan(startDist)){
+        if (shared.isBetterThan(startDist)) {
             System.out.println("Canceled2! " + shared.getShared() + " " + startDist.getShared());
-            return new Result<List<Integer>>(this.id, minTour, null, null);
+            return new Result<List<Integer>>(this.getChildID(), minTour, null, null);
         }
-        
+
         List<Integer> tour = new ArrayList<Integer>();
         for (List<Integer> perm : Collections2.permutations(getInitialTour())) {
             addStart(tour, perm);
@@ -98,7 +99,7 @@ public class TSPTask extends Task implements Serializable {
 //        System.out.println("done!");
 //        System.out.println("Min found!");
 //        printCityList(minTour);
-        return new Result<List<Integer>>(this.id, minTour, null, new UpperBound(min));
+        return new Result<List<Integer>>(this.getChildID(), minTour, null, new UpperBound(min));
     }
 
     private List<Task> makeTasks() {
@@ -107,15 +108,24 @@ public class TSPTask extends Task implements Serializable {
         for (int i = 0; i < start.size(); i++) {
             start_tmp[i] = start.get(i);
         }
+
         for (int i = 0; i < cities.length; i++) {
             if (!start.contains(i)) {
                 start_tmp[start.size()] = i;
                 tspTasks.add(new TSPTask(start_tmp, cities));
             }
         }
+
+        MinTask minTask = new MinTask(cities, tspTasks.size());
+        minTask.setChildID(this.getChildID());
+
+        for (Task task : tspTasks) {
+            task.setChildID(minTask.getID());
+        }
+
         List<Task> tasks = new ArrayList<Task>();
         tasks.addAll(tspTasks);
-        tasks.add(new MinTask(cities, this, tspTasks));
+        tasks.add(minTask);
         return tasks;
     }
 
@@ -200,5 +210,13 @@ public class TSPTask extends Task implements Serializable {
             shared = new UpperBound(Double.MAX_VALUE);
         }
         this.shared = (UpperBound) shared;
+    }
+
+    public String getChildID() {
+        return childID;
+    }
+
+    public void setChildID(String child_id) {
+        this.childID = child_id;
     }
 }
