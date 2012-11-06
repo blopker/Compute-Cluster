@@ -5,7 +5,6 @@ package api;
  * @author klopker
  */
 public abstract class Task {
-   private String childID = null;
     /**
      *  When called, the task should complete its work and return the results.
      * @return T
@@ -38,11 +37,9 @@ public abstract class Task {
      * Get the ID that this task will have a result for.
      * @return 
      */
-    public String getChildID(){
-        return childID;
-    }
+    public abstract String getChildID();
     
-    public void setChildID(String child_id){
-        this.childID = child_id;
-    }
+    public abstract void setChildID(String child_id);
+    
+    public abstract boolean isLocalTask();
 }

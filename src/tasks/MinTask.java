@@ -106,4 +106,9 @@ class MinTask extends Task implements Serializable {
     public void setChildID(String child_id) {
         this.childID = child_id;
     }
+
+    @Override
+    public boolean isLocalTask() {
+        return true;
+    }
 }

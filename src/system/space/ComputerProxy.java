@@ -27,17 +27,24 @@ class ComputerProxy implements ComputerAPI, Runnable {
 
     @Override
     public Result execute(Task task) throws RemoteException {
-        return realComputer.execute(task);
+        if (task.isLocalTask()) {
+            long startTime = System.currentTimeMillis();
+            Result result = task.execute();
+            long endTime = System.currentTimeMillis() - startTime;
+            result.setTaskRunTime(endTime);
+            return result;
+        } else {
+            return realComputer.execute(task);
+        }
     }
 
     @Override
     public void exit() throws RemoteException {
-        try{
+        try {
             realComputer.exit();
-        } catch (RemoteException re){
-            
+        } catch (RemoteException re) {
         }
-        
+
     }
 
     @Override

@@ -13,7 +13,7 @@ import java.util.UUID;
 public class TSPTask extends Task implements Serializable {
 
     private String childID = null;
-    private final int TOUR_SIZE = 8;
+    private final int TOUR_SIZE = 4;
     private double[][] cities;
     private List<Integer> start = new ArrayList<Integer>();
     List<Integer> minTour = new ArrayList<Integer>();
@@ -74,7 +74,7 @@ public class TSPTask extends Task implements Serializable {
 //                System.out.println("Not Canceled! " + shared.getShared() + " " + startDist.getShared());
                 return new Result<List<Integer>>(this.getChildID(), null, tasks, null);
             }
-            System.out.println("Canceled1! " + shared.getShared() + " " + startDist.getShared());
+//            System.out.println("Canceled1! " + shared.getShared() + " " + startDist.getShared());
             return new Result<List<Integer>>(this.getChildID(), minTour, null, null);
         }
 
@@ -82,7 +82,7 @@ public class TSPTask extends Task implements Serializable {
         double dist;
 
         if (shared.isBetterThan(startDist)) {
-            System.out.println("Canceled2! " + shared.getShared() + " " + startDist.getShared());
+//            System.out.println("Canceled2! " + shared.getShared() + " " + startDist.getShared());
             return new Result<List<Integer>>(this.getChildID(), minTour, null, null);
         }
 
@@ -218,5 +218,10 @@ public class TSPTask extends Task implements Serializable {
 
     public void setChildID(String child_id) {
         this.childID = child_id;
+    }
+
+    @Override
+    public boolean isLocalTask() {
+        return cities.length - start.size() > TOUR_SIZE;
     }
 }

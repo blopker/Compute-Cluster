@@ -7,7 +7,6 @@ package client;
 import api.RMIUtils;
 import api.Result;
 import api.SpaceAPI;
-import api.Task;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
