@@ -1,7 +1,7 @@
-CS290B-HW4
+CS290B-HW5
 ==========
 
-ASSIGNMENT 4
+ASSIGNMENT 5
 
 by Karl Lopker
 
@@ -9,6 +9,5 @@ Index
 -----
 - [Readme](readme.html)
 - [Javadoc](javadoc/index.html)
-- [Results & Analysis ](results.html)
+- [Results, Analysis & Future Enhancements](results.html)
 - [Design Document](design.html)
-- [Branch & Bound Summary](bb.html)

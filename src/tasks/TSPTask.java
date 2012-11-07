@@ -73,20 +73,13 @@ public class TSPTask extends Task implements Serializable {
             UpperBound lowerBound = getLowerBound();
             if (lowerBound.isBetterThan(shared)) {
                 List<Task> tasks = makeTasks();
-//                System.out.println("Not Canceled! " + shared.getShared() + " " + startDist.getShared());
                 return new Result<List<Integer>>(this.getChildID(), null, tasks, null);
             }
-//            System.out.println("Canceled1! " + shared.getShared() + " " + startDist.getShared());
             return new Result<List<Integer>>(this.getChildID(), minTour, null, null);
         }
 
         min = shared.getShared();
         double dist;
-
-//        if (shared.isBetterThan(lowerBound)) {
-////            System.out.println("Canceled2! " + shared.getShared() + " " + startDist.getShared());
-//            return new Result<List<Integer>>(this.getChildID(), minTour, null, null);
-//        }
 
         List<Integer> tour = new ArrayList<Integer>();
         for (List<Integer> perm : Collections2.permutations(getInitialTour())) {
@@ -98,9 +91,6 @@ public class TSPTask extends Task implements Serializable {
                 minTour.addAll(tour);
             }
         }
-//        System.out.println("done!");
-//        System.out.println("Min found!");
-//        printCityList(minTour);
         return new Result<List<Integer>>(this.getChildID(), minTour, null, new UpperBound(min));
     }
 
@@ -230,17 +220,12 @@ public class TSPTask extends Task implements Serializable {
     private UpperBound getLowerBound() {
         
         List<double[]> points = new ArrayList<double[]>();
-//        points.add(cities[start.get(start.size()-1)]);
         for (int i = 0; i < cities.length; i++) {
             if (!start.contains(i)) {
                 points.add(cities[i]);
             }
         }
         points.remove(0);
-        
-//        if(start.size() > 1){
-//            points.add(cities[start.get(0)]);
-//        }
         
         int n = points.size();
         double[] x = new double[n], y = new double[n];
@@ -273,8 +258,6 @@ public class TSPTask extends Task implements Serializable {
                 }
             }
         }
-//        System.out.format("%.2f", total);
         return new UpperBound(total + getTourLength(start));
-//        return new UpperBound(getTourLength(start));
     }
 }

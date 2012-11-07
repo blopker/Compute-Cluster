@@ -21,3 +21,5 @@ Run the runComputer directive as many times as necessary.
 	ant runSpace
 	ant runComputer
 	ant runSalesman
+	ant runFib
+	ant runMandel

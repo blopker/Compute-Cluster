@@ -21,7 +21,7 @@ public class FibTask extends Task implements Serializable {
     private final int n;
     private Integer value = 0;
     private final String id;
-    private final int LIMIT = 10;
+    private final int LIMIT = 1;
 
     public FibTask(int n) {
         this.id = UUID.randomUUID().toString();

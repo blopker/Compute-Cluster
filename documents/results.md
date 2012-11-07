@@ -1,24 +1,95 @@
-CS290B-HW4
+CS290B-HW5
 ==========
 
-ASSIGNMENT 4
+ASSIGNMENT 5
 
 by Karl Lopker
 
 Results
 -------
 
+### Fibonacci
+Calculating F(20). Best of 4 runs.
+
+#### Multicomputers off, local tasks off
+- 1 Computer:
+- 8 Computers:
+- 16 Computers:
+
+#### Multicomputers on, local tasks off
+- 1 Computer:
+- 8 Computers:
+- 16 Computers:
+
+#### Multicomputers off, local tasks on
+- 1 Computer:
+- 8 Computers:
+- 16 Computers:
+
+#### Multicomputers on, local tasks on
+- 1 Computer:
+- 8 Computers:
+- 16 Computers:
+
+#### Parallel Efficiency, multiple computers
+1. 105705/(1*105705) = 1
+2. 105705/(2*52079) = 1.014
+8. 105705/(8*37178) = 0.355
+
+![TSP](tsp.PNG)
+
+### Mandelbrot Set
+Calculating a Mandelbrot set with iteration limit of 4096. Best of 4 runs.
+
+#### Multicomputers off, local tasks off
+- 1 Computer:
+- 8 Computers:
+- 16 Computers:
+
+#### Multicomputers on, local tasks off
+- 1 Computer:
+- 8 Computers:
+- 16 Computers:
+
+#### Multicomputers off, local tasks on
+- 1 Computer:
+- 8 Computers:
+- 16 Computers:
+
+#### Multicomputers on, local tasks on
+- 1 Computer:
+- 8 Computers:
+- 16 Computers:
+
+#### Parallel Efficiency, multiple computers
+1. 105705/(1*105705) = 1
+2. 105705/(2*52079) = 1.014
+8. 105705/(8*37178) = 0.355
+
+![TSP](tsp.PNG)
+
 ### Sales Man
-Calculating a 13 city tour with a task split cut off of 8 cities. Best of 4 runs.
+Calculating a 13 city tour with a task split cut off of 4 cities. Best of 4 runs.
 
-#### Same JVM
-	Total Time: 154.362 sec
+#### Multicomputers off, local tasks off
+- 1 Computer:
+- 8 Computers:
+- 16 Computers:
 
-#### Different JVMs, same machine
-	Total Time: 158.256 sec
+#### Multicomputers on, local tasks off
+- 1 Computer:
+- 8 Computers:
+- 16 Computers:
 
-#### Different machines.
-	Total Time: 105.705 sec
+#### Multicomputers off, local tasks on
+- 1 Computer:
+- 8 Computers:
+- 16 Computers:
+
+#### Multicomputers on, local tasks on
+- 1 Computer:
+- 8 Computers:
+- 16 Computers:
 
 #### Parallel Efficiency, multiple computers
 1. 105705/(1*105705) = 1
