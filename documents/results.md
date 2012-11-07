@@ -11,94 +11,87 @@ Results
 ### Fibonacci
 Calculating F(20). Best of 4 runs.
 
-#### Multicomputers off, local tasks off
-- 1 Computer:
-- 8 Computers:
-- 16 Computers:
+#### Multi-core off, local tasks off
+- 1 Computer: 14911
+- 8 Computers: 2793
+- 16 Computers: 2266
 
-#### Multicomputers on, local tasks off
-- 1 Computer:
-- 8 Computers:
-- 16 Computers:
+#### Multi-core on, local tasks off
+- 1 Computer: 4270
+- 8 Computers: 2116
+- 16 Computers: 2093
 
-#### Multicomputers off, local tasks on
-- 1 Computer:
-- 8 Computers:
-- 16 Computers:
+#### Multi-core off, local tasks on
+- 1 Computer: 4313
+- 8 Computers: 581
+- 16 Computers: 405
 
-#### Multicomputers on, local tasks on
-- 1 Computer:
-- 8 Computers:
-- 16 Computers:
+#### Multi-core on, local tasks on
+- 1 Computer: 1087
+- 8 Computers: 448
+- 16 Computers: 379
 
-#### Parallel Efficiency, multiple computers
-1. 105705/(1*105705) = 1
-2. 105705/(2*52079) = 1.014
-8. 105705/(8*37178) = 0.355
+#### Parallel Efficiency
 
-![TSP](tsp.PNG)
+![Fib](fibtime.PNG)
+![Fib](fibeff.PNG)
 
 ### Mandelbrot Set
 Calculating a Mandelbrot set with iteration limit of 4096. Best of 4 runs.
 
-#### Multicomputers off, local tasks off
-- 1 Computer:
-- 8 Computers:
-- 16 Computers:
+#### Multi-core off, local tasks off
+- 1 Computer: 27639
+- 8 Computers: 4401
+- 16 Computers: 3785
 
-#### Multicomputers on, local tasks off
-- 1 Computer:
-- 8 Computers:
-- 16 Computers:
+#### Multi-core on, local tasks off
+- 1 Computer: 7483
+- 8 Computers: 5295
+- 16 Computers: 3137
 
-#### Multicomputers off, local tasks on
-- 1 Computer:
-- 8 Computers:
-- 16 Computers:
+#### Multi-core off, local tasks on
+- 1 Computer: 27673
+- 8 Computers: 6071
+- 16 Computers: 5096
 
-#### Multicomputers on, local tasks on
-- 1 Computer:
-- 8 Computers:
-- 16 Computers:
+#### Multi-core on, local tasks on
+- 1 Computer: 7511
+- 8 Computers: 3976
+- 16 Computers: 3213
 
-#### Parallel Efficiency, multiple computers
-1. 105705/(1*105705) = 1
-2. 105705/(2*52079) = 1.014
-8. 105705/(8*37178) = 0.355
+#### Parallel Efficiency
 
-![TSP](tsp.PNG)
+![Mandel](mandeltime.PNG)
+![Mandel](mandeleff.PNG)
 
 ### Sales Man
-Calculating a 13 city tour with a task split cut off of 4 cities. Best of 4 runs.
+Calculating a 16 city tour with a task split cut off of 4 cities. Best of 4 runs.
 
-#### Multicomputers off, local tasks off
-- 1 Computer:
-- 8 Computers:
-- 16 Computers:
+#### Multi-core off, local tasks off
+- 1 Computer: 1236356
+- 8 Computers: 177366
+- 16 Computers: 80480
 
-#### Multicomputers on, local tasks off
-- 1 Computer:
-- 8 Computers:
-- 16 Computers:
+#### Multi-core on, local tasks off
+- 1 Computer: 425210
+- 8 Computers: 82460
+- 16 Computers: 82297
 
-#### Multicomputers off, local tasks on
-- 1 Computer:
-- 8 Computers:
-- 16 Computers:
+#### Multi-core off, local tasks on
+- 1 Computer: 147496
+- 8 Computers: 32704
+- 16 Computers: 23687
 
-#### Multicomputers on, local tasks on
-- 1 Computer:
-- 8 Computers:
-- 16 Computers:
+#### Multi-core on, local tasks on
+- 1 Computer: 69084
+- 8 Computers: 23884
+- 16 Computers: 22145
 
-#### Parallel Efficiency, multiple computers
-1. 105705/(1*105705) = 1
-2. 105705/(2*52079) = 1.014
-8. 105705/(8*37178) = 0.355
+#### Parallel Efficiency
 
-![TSP](tsp.PNG)
+![TSP](saletime.PNG)
+![TSP](saleeff.PNG)
 
 Analysis
 --------
-#### Explain your parallel [in]efficiencies
-Each computer in these tests contained 4 cores. This program is designed to used all of them. So when we are testing 8 computers, that's really 32 cores at work. This is enough parallelism to strain most non-embarrassingly parallel applications. From the graph we can see that at two computers (8 cores) the parallel efficiency is holding strong. However, when 8 computers are used (32 cores) efficiency takes a hit. This is without a doubt do to the Space's inefficiencies. The space makes several expensive operations, like in its dependency sorting method, that drastically slows down task transfers. To alleviate this new data structures should be used. Also only one thread does the task sorting, this could be parallelized as well.
+By far the best improvment in run time was the addition of the multi-core code. This is becasue it effectivly gave a 4x increase in the number of computers avaliable for processing.

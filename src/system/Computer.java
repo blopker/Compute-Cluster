@@ -23,7 +23,8 @@ class Computer extends UnicastRemoteObject implements ComputerAPI {
 
     public static void main(String[] args) throws Exception {
         SpaceAPI space = RMIUtils.connectToSpace(args[0]);
-        int cores = Runtime.getRuntime().availableProcessors();
+//        int cores = Runtime.getRuntime().availableProcessors();
+        int cores = 1;
         for (int i = 0; i < cores; i++) {
             space.register(new Computer(space));
             System.out.println("Computer " + i + ": Ready.");

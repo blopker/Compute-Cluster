@@ -9,5 +9,5 @@ Index
 -----
 - [Readme](readme.html)
 - [Javadoc](javadoc/index.html)
-- [Results, Analysis & Future Enhancements](results.html)
-- [Design Document](design.html)
+- [Results & Analysis](results.html)
+- [Design Document & Future Enhancements](design.html)
