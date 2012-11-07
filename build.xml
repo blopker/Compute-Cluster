@@ -3,15 +3,6 @@
     <!-- set global properties for this build -->
     <property name="hostname" value="localhost"/>
     <property name="fork" value="true" />
-    <!-- Computer list -->
-    <property name="computer1" value="blind.cs.ucsb.edu" />
-    <property name="computer2" value="didley.cs.ucsb.edu" />
-    <property name="computer3" value="dizzy.cs.ucsb.edu" />
-    <property name="computer4" value="dorsey.cs.ucsb.edu" />
-    <property name="computer5" value="ella.cs.ucsb.edu" />
-    <property name="computer6" value="joplin.cs.ucsb.edu" />
-    <property name="computer7" value="kenny.cs.ucsb.edu" />
-    <property name="computer8" value="linus.cs.ucsb.edu" />
 
     <property name="src" location="src"/>
     <property name="build" location="build"/>
@@ -86,23 +77,19 @@
         </java>
     </target>
 
-    <target name = "startComputers4" description = "Start Space and 4 Computers">
-        <parallel>
-            <sshexec host="${computer1}" username="${username}" password="${pw}" trust="true" command="cd ${dist}/..; ant runComputer"/>
-            <sshexec host="${computer2}" username="${username}" password="${pw}" trust="true" command="cd ${dist}/..; ant runComputer"/>
-            <sshexec host="${computer3}" username="${username}" password="${pw}" trust="true" command="cd ${dist}/..; ant runComputer"/>
-            <sshexec host="${computer4}" username="${username}" password="${pw}" trust="true" command="cd ${dist}/..; ant runComputer"/>
-        </parallel>
-    </target>
-    <target name = "startComputers2" description = "Start Space and 4 Computers">
-        <parallel>
-            <sshexec host="${computer3}" username="${username}" password="${pw}" trust="true" command="cd ${dist}/..; ant runComputer"/>
-            <sshexec host="${computer4}" username="${username}" password="${pw}" trust="true" command="cd ${dist}/..; ant runComputer"/>
-        </parallel>
-    </target>
-
     <target name="runFib" depends="build" description="run client" >
         <java classname="client.FibClient" fork="${fork}">
+            <jvmarg value="-Djava.rmi.server.codebase=${client_web_codebase}"/>
+            <jvmarg value="-Djava.security.policy=policy.txt"/>
+            <arg value="${hostname}"/>
+            <classpath>
+                <pathelement location="dist/client.jar"/>
+            </classpath>
+        </java>
+    </target>
+    
+    <target name="runMandel" depends="build" description="run client" >
+        <java classname="client.MandelClient" fork="${fork}">
             <jvmarg value="-Djava.rmi.server.codebase=${client_web_codebase}"/>
             <jvmarg value="-Djava.security.policy=policy.txt"/>
             <arg value="${hostname}"/>

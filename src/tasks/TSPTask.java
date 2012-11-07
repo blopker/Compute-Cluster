@@ -7,6 +7,7 @@ import api.UpperBound;
 import com.google.common.collect.Collections2;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -67,9 +68,10 @@ public class TSPTask extends Task implements Serializable {
 
     @Override
     public Result<List<Integer>> execute() {
-        UpperBound startDist = new UpperBound(getTourLength(start));
+        
         if (cities.length - start.size() > TOUR_SIZE) {
-            if (startDist.isBetterThan(shared)) {
+            UpperBound lowerBound = getLowerBound();
+            if (lowerBound.isBetterThan(shared)) {
                 List<Task> tasks = makeTasks();
 //                System.out.println("Not Canceled! " + shared.getShared() + " " + startDist.getShared());
                 return new Result<List<Integer>>(this.getChildID(), null, tasks, null);
@@ -81,10 +83,10 @@ public class TSPTask extends Task implements Serializable {
         min = shared.getShared();
         double dist;
 
-        if (shared.isBetterThan(startDist)) {
-//            System.out.println("Canceled2! " + shared.getShared() + " " + startDist.getShared());
-            return new Result<List<Integer>>(this.getChildID(), minTour, null, null);
-        }
+//        if (shared.isBetterThan(lowerBound)) {
+////            System.out.println("Canceled2! " + shared.getShared() + " " + startDist.getShared());
+//            return new Result<List<Integer>>(this.getChildID(), minTour, null, null);
+//        }
 
         List<Integer> tour = new ArrayList<Integer>();
         for (List<Integer> perm : Collections2.permutations(getInitialTour())) {
@@ -223,5 +225,56 @@ public class TSPTask extends Task implements Serializable {
     @Override
     public boolean isLocalTask() {
         return cities.length - start.size() > TOUR_SIZE;
+    }
+
+    private UpperBound getLowerBound() {
+        
+        List<double[]> points = new ArrayList<double[]>();
+//        points.add(cities[start.get(start.size()-1)]);
+        for (int i = 0; i < cities.length; i++) {
+            if (!start.contains(i)) {
+                points.add(cities[i]);
+            }
+        }
+        points.remove(0);
+        
+//        if(start.size() > 1){
+//            points.add(cities[start.get(0)]);
+//        }
+        
+        int n = points.size();
+        double[] x = new double[n], y = new double[n];
+        for (int i = 0; i < n; i++) {
+            x[i] = points.get(i)[0];
+            y[i] = points.get(i)[1];
+        }
+        
+        double[] cost = new double[n]; // distance to MST
+        boolean[] visit = new boolean[n];
+        Arrays.fill(cost, Double.MAX_VALUE);
+        cost[0] = 0.0D;
+        double total = 0.0;
+        for (int i = 0; i < cost.length; i++) {
+            // Find next node to visit: minimum distance to MST
+            double m = Double.MAX_VALUE;
+            int v = -1;
+            for (int j = 0; j < cost.length; j++) {
+                if (!visit[j] && cost[j] < m) {
+                    v = j;
+                    m = cost[j];
+                }
+            }
+            visit[v] = true;
+            total += m;
+            for (int j = 0; j < cost.length; j++) {
+                final double d = Math.hypot(x[v] - x[j], y[v] - y[j]);
+                if (d < cost[j]) {
+                    cost[j] = d;
+                }
+            }
+        }
+//        System.out.format("%.2f", total);
+        return new UpperBound(total + getTourLength(start));
+//        return new UpperBound(getTourLength(start));
     }
 }
